@@ -1,0 +1,371 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// /////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////// DB SETTINGS ///////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////////////
+model users {
+  id       BigInt @id @default(autoincrement())
+  nickname String @unique @db.VarChar(30)
+  email    String @unique
+  password String
+
+  // *** 본인인증시 입력되는 정보 ***
+  phone     String   @unique @db.VarChar(11)
+  birthDate DateTime
+  ci        String
+  di        String
+  name      String   @db.VarChar(20)
+  gender    Boolean
+
+  grade               Int                           @default(0)
+  role                Int                           @default(0)
+  valid               Boolean                       @default(true)
+  created_at          DateTime                      @default(now())
+  updated_at          DateTime                      @updatedAt
+  deleted_at          DateTime?
+  images              user_images[]
+  badges              user_badges[]
+  notification_token  notification_tokens[]
+  errors              error_log[]
+  term                user_terms?
+  token               user_tokens?
+  status              user_status?
+  hexagon             user_hexagon?
+  profile             user_profile?
+  introduce           user_introduce?
+  lifestyle           user_lifestyle?
+  admin_password_code admin_password_recovery_code?
+  // 추천 관련 필드
+  referrer            user_refers[]                 @relation("user_refers_referrer") // 추천한 사람
+  referee             user_refers[]                 @relation("user_refers_referee") // 추천을 받은 사람
+
+  // 오늘의 카드 관련 필드 
+  male_card   user_cards[] @relation("user_cards_male_id")
+  female_card user_cards[] @relation("user_cards_female_id")
+}
+
+model notification_tokens {
+  id                 BigInt          @id @default(autoincrement())
+  user_id            BigInt          @unique
+  device_type        String
+  notification_token String
+  status             Boolean         @default(true)
+  notifications      notifications[]
+  user               users           @relation(fields: [user_id], references: [id])
+}
+
+model notifications {
+  id                    BigInt              @id @default(autoincrement())
+  notification_token_id BigInt
+  title                 String
+  body                  String
+  status                Boolean             @default(true)
+  created_by            String
+  notification_token    notification_tokens @relation(fields: [notification_token_id], references: [id])
+}
+
+model user_refers {
+  id          BigInt @id @default(autoincrement())
+  referrer_id BigInt // 추천인의 ID
+  referee_id  BigInt // 추천받은 사용자의 ID
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  referrer users @relation("user_refers_referrer", fields: [referrer_id], references: [id])
+  referee  users @relation("user_refers_referee", fields: [referee_id], references: [id])
+
+  @@unique([referrer_id, referee_id])
+}
+
+model user_status {
+  user_id            BigInt   @unique
+  incorrect_pw_count Int      @default(0)
+  invalid_status     Int      @default(0)
+  updated_at         DateTime @default(now())
+  user               users    @relation(fields: [user_id], references: [id])
+}
+
+model user_profile {
+  user_id BigInt @unique
+
+  age                Int @default(0)
+  education_id       Int @default(1)
+  graduated_state_id Int @default(1)
+  school_id          Int @default(1)
+  job_type_id        Int @default(1)
+  job_id             Int @default(1)
+  workplace_id       Int @default(1)
+  residence_id       Int @default(1)
+
+  school_status    Int              @default(0)
+  job_status       Int              @default(0)
+  created_at       DateTime         @default(now())
+  updated_at       DateTime?        @updatedAt
+  user             users            @relation(fields: [user_id], references: [id])
+  education        education        @relation(fields: [education_id], references: [id])
+  graduated_status graduated_status @relation(fields: [graduated_state_id], references: [id])
+  school           school           @relation(fields: [school_id], references: [id])
+  job              job              @relation(fields: [job_id], references: [id])
+  job_type         job_type         @relation(fields: [job_type_id], references: [id])
+  workplace        location         @relation("user_profile_workplace_id", fields: [workplace_id], references: [id])
+  residence        location         @relation("user_profile_residence_id", fields: [residence_id], references: [id])
+}
+
+model education {
+  id    Int            @id @default(autoincrement())
+  name  String         @unique
+  users user_profile[]
+}
+
+model graduated_status {
+  id    Int            @id @default(autoincrement())
+  name  String         @unique
+  users user_profile[]
+}
+
+model school {
+  id    Int            @id @default(autoincrement())
+  name  String         @unique
+  users user_profile[]
+}
+
+model job {
+  id    Int            @id @default(autoincrement())
+  name  String
+  users user_profile[]
+}
+
+model job_type {
+  id    Int            @id @default(autoincrement())
+  name  String
+  users user_profile[]
+}
+
+model location {
+  id         Int            @id @default(autoincrement())
+  name_1     String
+  name_2     String
+  worklplace user_profile[] @relation("user_profile_workplace_id")
+  residence  user_profile[] @relation("user_profile_residence_id")
+}
+
+model user_images {
+  id         BigInt    @id @default(autoincrement())
+  user_id    BigInt
+  image_url  String    @db.LongText
+  image_idx  Int
+  image_type Int
+  valid      Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+  user       users     @relation(fields: [user_id], references: [id])
+}
+
+model user_introduce {
+  user_id      BigInt  @unique
+  introduction String? @db.LongText
+  height       Int     @default(0)
+  body_type_id Int     @default(1)
+  religion_id  Int     @default(1)
+  smoking_id   Int     @default(1)
+  drinking_id  Int     @default(1)
+
+  status     Int       @default(0)
+  updated_at DateTime  @default(now())
+  user       users     @relation(fields: [user_id], references: [id])
+  body_type  body_type @relation(fields: [body_type_id], references: [id])
+  religion   religion  @relation(fields: [religion_id], references: [id])
+  smoking    smoking   @relation(fields: [smoking_id], references: [id])
+  drinking   drinking  @relation(fields: [drinking_id], references: [id])
+}
+
+model body_type {
+  id        Int              @id @default(autoincrement())
+  name      String           @unique @db.VarChar(10)
+  body_type user_introduce[]
+}
+
+model religion {
+  id       Int              @id @default(autoincrement())
+  name     String           @unique @db.VarChar(10)
+  religion user_introduce[]
+}
+
+model smoking {
+  id      Int              @id @default(autoincrement())
+  name    String           @unique @db.VarChar(10)
+  smoking user_introduce[]
+}
+
+model drinking {
+  id       Int              @id @default(autoincrement())
+  name     String           @unique @db.VarChar(10)
+  drinking user_introduce[]
+}
+
+model mbti {
+  id      Int              @id @default(autoincrement())
+  name    String           @unique @db.VarChar(5)
+  content String           @db.VarChar(200)
+  mbti    user_lifestyle[]
+}
+
+model user_lifestyle {
+  id                     BigInt                  @id @default(autoincrement())
+  user_id                BigInt                  @unique
+  introduction           String?                 @db.LongText
+  mbti_id                Int                     @default(1)
+  status                 Int                     @default(0)
+  updated_at             DateTime                @updatedAt
+  user                   users                   @relation(fields: [user_id], references: [id])
+  mbti                   mbti                    @relation(fields: [mbti_id], references: [id])
+  user_lifestyle_details user_lifestyle_detail[]
+}
+
+model user_lifestyle_detail {
+  id                  BigInt           @id @default(autoincrement())
+  lifestyle_id        BigInt
+  lifestyle_type_id   Int              @default(1)
+  lifestyle_detail_id Int              @default(1)
+  updated_at          DateTime         @updatedAt
+  lifestyle           user_lifestyle   @relation(fields: [lifestyle_id], references: [id])
+  lifestyle_type      lifestyle_type   @relation(fields: [lifestyle_type_id], references: [id])
+  lifestyle_detail    lifestyle_detail @relation(fields: [lifestyle_detail_id], references: [id])
+}
+
+model lifestyle_type {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @unique @db.VarChar(30)
+  lifestyle_detail      lifestyle_detail[]
+  user_lifestyle_detail user_lifestyle_detail[]
+}
+
+model lifestyle_detail {
+  id                    Int                     @id @default(autoincrement())
+  lifestyle_type_id     Int                     @default(1)
+  name                  String                  @db.VarChar(30)
+  lifestyle_type        lifestyle_type          @relation(fields: [lifestyle_type_id], references: [id])
+  user_lifestyle_detail user_lifestyle_detail[]
+}
+
+model user_badges {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt
+  badge_id   Int
+  created_at DateTime @default(now())
+  user       users    @relation(fields: [user_id], references: [id])
+  badge      badge    @relation(fields: [badge_id], references: [id])
+}
+
+model badge {
+  id            Int           @id @default(autoincrement())
+  badge_type_id Int
+  name          String        @unique @db.VarChar(30)
+  content       String        @db.VarChar(200)
+  image_url     String        @db.LongText
+  badge_type    badge_type    @relation(fields: [badge_type_id], references: [id])
+  user_badges   user_badges[]
+}
+
+model badge_type {
+  id     Int     @id @default(autoincrement())
+  name   String
+  badges badge[]
+}
+
+model user_cards {
+  id                 BigInt  @id @default(autoincrement())
+  male_id            BigInt
+  female_id          BigInt
+  // 평점
+  male_point         Int     @default(0)
+  female_point       Int     @default(0)
+  // 조회 여부
+  male_read          Boolean @default(false)
+  female_read        Boolean @default(false)
+  // 호감 상태 *** 일반 호감 0 = none, 1 = sent, 2 = agree 3 = disagree
+  //         *** 슈퍼 호감 11 = sent, 12 = agree
+  male_like_status   Int     @default(0)
+  female_like_status Int     @default(0)
+
+  valid       Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  deleted_at  DateTime?
+  male_card   users     @relation("user_cards_male_id", fields: [male_id], references: [id])
+  female_card users     @relation("user_cards_female_id", fields: [female_id], references: [id])
+
+  @@unique([male_id, female_id])
+}
+
+model user_hexagon {
+  user_id BigInt @unique
+
+  salary     Int @default(0)
+  education  Int @default(0)
+  appearance Int @default(0)
+  family     Int @default(0)
+  wealth     Int @default(0)
+  value      Int @default(0)
+
+  valid      Boolean  @default(false)
+  updated_at DateTime @updatedAt
+  user       users    @relation(fields: [user_id], references: [id])
+}
+
+model user_tokens {
+  id            BigInt   @id @default(autoincrement())
+  refresh_token String   @unique @db.VarChar(255)
+  ip            String
+  refresh_count Int
+  user_agent    String
+  user_id       BigInt   @unique
+  valid         Boolean
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user          users    @relation(fields: [user_id], references: [id])
+}
+
+model terms {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.VarChar(30)
+  content   String       @db.VarChar(200)
+  user_term user_terms[]
+}
+
+model user_terms {
+  user_id    BigInt   @id @unique
+  term_id    Int
+  is_agree   Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  term       terms    @relation(fields: [term_id], references: [id])
+  user       users    @relation(fields: [user_id], references: [id])
+
+  @@index([term_id], map: "user_terms_term_id_fkey")
+}
+
+model error_log {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @default(now())
+  message    String
+  stack      String?
+  user_id    BigInt?
+  user       users?   @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], map: "Error_log_user_id_fkey")
+}
+
+model admin_password_recovery_code {
+  user_id    BigInt   @id @unique
+  code       String
+  created_at DateTime @default(now())
+  user       users?   @relation(fields: [user_id], references: [id])
+}
