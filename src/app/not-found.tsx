@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { config } from '../config';
-import { paths } from '../paths';
+import { paths } from '../routes/paths';
 
 export const metadata = { title: `Not found | ${config.site.name}` };
 

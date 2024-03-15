@@ -7,9 +7,6 @@ import dayjs from 'dayjs';
 
 import { CustomersFilters } from '../../../components/dashboard/customer/customers-filters';
 import { CustomersTable } from '../../../components/dashboard/customer/customers-table';
-import { config } from '../../../config';
-
-const metadata = { title: `Customers | Dashboard | ${config.site.name}` };
 
 const customers = [
   {
@@ -24,7 +21,7 @@ const customers = [
   // 잘라낸 일부 데이터...
 ];
 
-export default function Page() {
+export default function CustomersPage() {
   const page = 0;
   const rowsPerPage = 5;
 

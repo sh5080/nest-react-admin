@@ -1,16 +1,24 @@
-import './styles/global.css';
+import { RecoilRoot } from 'recoil';
+
+import './global.css';
 
 import React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router-dom';
 
-import Page from './app/dashboard/page';
+import { ErrorFallback } from './lib/error-boundary';
+import { Router } from './routes/router';
 
 export default function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Page />
-      </BrowserRouter>
+      <RecoilRoot>
+        <BrowserRouter>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Router />
+          </ErrorBoundary>
+        </BrowserRouter>
+      </RecoilRoot>
     </div>
   );
 }

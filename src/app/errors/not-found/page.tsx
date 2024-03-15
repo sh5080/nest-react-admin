@@ -6,12 +6,9 @@ import Typography from '@mui/material/Typography';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { Link } from 'react-router-dom';
 
-import { config } from '../../../config';
-import { paths } from '../../../paths';
+import { paths } from '../../../routes/paths';
 
-const metadata = { title: `Not found | Errors | ${config.site.name}` };
-
-export default function NotFound() {
+export default function NotFoundPage() {
   return (
     <Box component="main" sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100%' }}>
       <Stack spacing={3} sx={{ alignItems: 'center', maxWidth: 'md' }}>
@@ -23,7 +20,7 @@ export default function NotFound() {
           />
         </Box>
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
-          404: The page you are looking for isn't here
+          404: 잘못된 접근입니다.
         </Typography>
         <Typography color="text.secondary" variant="body1" sx={{ textAlign: 'center' }}>
           You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation

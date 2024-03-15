@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { DynamicLogo } from '../../components/core/logo';
-import { paths } from '../../paths';
+import { paths } from '../../routes/paths';
 
 export interface LayoutProps {
   children: React.ReactNode;

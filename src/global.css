@@ -31,3 +31,7 @@ html {
 body {
   height: 100%;
 }
+
+.MuiAlert-message {
+  white-space: pre-wrap;
+}

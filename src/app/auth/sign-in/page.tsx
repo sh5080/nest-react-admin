@@ -1,17 +1,18 @@
 import React from 'react';
 
-import { Layout } from '../../../components/auth/layout';
 import { SignInForm } from '../../../components/auth/sign-in-form';
-import { config } from '../../../config';
+import Layout from '../../layout';
 
-const metadata = { title: `Sign in | Auth | ${config.site.name}` };
-
-function Page() {
+export default function SignInPage() {
   return (
     <Layout>
-      <SignInForm />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ width: '50%', maxWidth: '400px' }}>
+          {' '}
+          {/* 폼의 너비와 최대 너비를 설정 */}
+          <SignInForm /> {/* 로그인 폼 */}
+        </div>
+      </div>
     </Layout>
   );
 }
-
-export { Page as default, metadata };

@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { RecoilRoot } from 'recoil';
 
-import '../../styles/global.css';
+import '../global.css';
 
 import { LocalizationProvider } from '../components/core/localization-provider';
 import { ThemeProvider } from '../components/core/theme-provider/theme-provider';
@@ -14,14 +13,10 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
-    <RecoilRoot>
-      <html lang="en">
-        <body>
-          <LocalizationProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </LocalizationProvider>
-        </body>
-      </html>
-    </RecoilRoot>
+    <div>
+      <LocalizationProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </LocalizationProvider>
+    </div>
   );
 }

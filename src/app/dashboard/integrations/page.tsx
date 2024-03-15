@@ -9,9 +9,6 @@ import dayjs from 'dayjs';
 
 import { IntegrationCard } from '../../../components/dashboard/integrations/integrations-card';
 import { CompaniesFilters } from '../../../components/dashboard/integrations/integrations-filters';
-import { config } from '../../../config';
-
-const metadata = { title: `Integrations | Dashboard | ${config.site.name}` };
 
 const integrations = [
   {
@@ -25,7 +22,7 @@ const integrations = [
   // 일부 데이터 생략...
 ];
 
-export default function Page() {
+export default function IntegrationsPage() {
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>

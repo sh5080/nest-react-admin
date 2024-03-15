@@ -10,9 +10,6 @@ import { TasksProgress } from '../../components/dashboard/overview/tasks-progres
 import { TotalCustomers } from '../../components/dashboard/overview/total-customers';
 import { TotalProfit } from '../../components/dashboard/overview/total-profit';
 import { Traffic } from '../../components/dashboard/overview/traffic';
-import { config } from '../../config';
-
-const metadata = { title: `Overview | Dashboard | ${config.site.name}` };
 
 export default function Page() {
   return (

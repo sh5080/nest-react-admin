@@ -5,11 +5,8 @@ import Typography from '@mui/material/Typography';
 
 import { AccountDetailsForm } from '../../../components/dashboard/account/account-details-form';
 import { AccountInfo } from '../../../components/dashboard/account/account-info';
-import { config } from '../../../config';
 
-const metadata = { title: `Account | Dashboard | ${config.site.name}` };
-
-function Page() {
+export default function AccountPage() {
   return (
     <Stack spacing={3}>
       <div>
@@ -26,5 +23,3 @@ function Page() {
     </Stack>
   );
 }
-
-export { Page as default, metadata };
