@@ -1,6 +1,7 @@
 'use client';
 
 import { loginApi } from '../../apis/auth';
+import { ClientError, ServerError } from '../../types/error.type';
 import type { User } from '../../types/user';
 
 const user = {
@@ -28,14 +29,13 @@ class AuthClient {
       const loginRes = await loginApi(email, password);
       console.log('로그인시 확인되는 값: ', loginRes);
 
-      if (!loginRes) {
-        return { error: '이메일 혹은 패스워드가 일치하지 않습니다.' };
-      }
       const { nickname, role } = loginRes.data;
       return { nickname, role };
     } catch (err) {
-      console.log('여기들어와설마?');
-      throw err;
+      const data = err.response.data;
+      if (data.statusCode < 500) {
+        throw new ClientError(data.message);
+      } else throw new ServerError(err.message);
     }
   }
 
