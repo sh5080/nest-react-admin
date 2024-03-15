@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 
 import { useUser } from '../../hooks/use-user';
@@ -29,7 +29,6 @@ export function AuthGuard({ children }: AuthGuardProps): React.ReactElement | nu
     checkPermissions().catch(() => {
       // noop
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
   }, [nickname, role]);
 
   if (isChecking) {
