@@ -34,7 +34,7 @@ export class AuthService {
         userLoginDto.email
       );
       if (!userData) {
-        throw new NotFoundException("해당 유저는 존재하지 않습니다.");
+        throw new NotFoundException("아이디 혹은 비밀번호가 일치하지 않습니다.");
       }
 
       if (userData.role < 1 || userData.role > 2) {
@@ -45,7 +45,7 @@ export class AuthService {
         userData.password
       );
       if (!isPasswordValid) {
-        throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+        throw new BadRequestException("아이디 혹은 비밀번호가 일치하지 않습니다.");
       }
 
       const tokenData = await this.createTokens(
