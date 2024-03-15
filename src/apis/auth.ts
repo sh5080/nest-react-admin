@@ -1,10 +1,13 @@
+import { AxiosResponse } from 'axios';
+
+import { LoginResponse } from '../types/response.type';
 import { defaultInstance } from './instance';
 
 const defaultUrl = 'auth';
 
-export const loginApi = async (email: string, password: string) => {
+export const loginApi = async (email: string, password: string): Promise<LoginResponse> => {
   try {
-    const response = await defaultInstance.post(
+    const response: AxiosResponse<LoginResponse> = await defaultInstance.post(
       `/${defaultUrl}/login`,
       {
         email,
@@ -12,6 +15,7 @@ export const loginApi = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
+    console.log('응답값!', response);
     return response.data;
   } catch (err) {
     console.error(err);

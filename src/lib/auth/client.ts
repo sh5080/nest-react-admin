@@ -22,27 +22,32 @@ export interface ResetPasswordParams {
 
 class AuthClient {
   async login(params: loginParams): Promise<{ error?: string; nickname?: string; role?: string }> {
-    const { email, password } = params;
+    try {
+      const { email, password } = params;
 
-    const loginRes = await loginApi(email, password);
-    console.log('로그인시 확인되는 값: ', loginRes);
+      const loginRes = await loginApi(email, password);
+      console.log('로그인시 확인되는 값: ', loginRes);
 
-    if (!loginRes) {
-      return { error: '이메일 혹은 패스워드가 일치하지 않습니다.' };
+      if (!loginRes) {
+        return { error: '이메일 혹은 패스워드가 일치하지 않습니다.' };
+      }
+      const { nickname, role } = loginRes.data;
+      return { nickname, role };
+    } catch (err) {
+      console.log('여기들어와설마?');
+      throw err;
     }
-    const { nickname, role } = loginRes.data;
-    return { nickname, role };
   }
 
   async resetPassword(params: ResetPasswordParams) {
     const { email } = params;
-
+    console.log('여기: ', email);
     return { error: 'Password reset not implemented' };
   }
 
-  async updatePassword(_: ResetPasswordParams): Promise<{ error?: string }> {
-    return { error: 'Update reset not implemented' };
-  }
+  // async updatePassword(_: ResetPasswordParams): Promise<{ error?: string }> {
+  //   return { error: 'Update reset not implemented' };
+  // }
 
   async getUser(): Promise<{ data?: User | null; error?: string }> {
     // Make API request

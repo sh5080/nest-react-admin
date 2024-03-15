@@ -15,8 +15,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { authClient } from '../../lib/auth/client';
-import { isValidEmail, isValidPassword } from '../../lib/validate';
-import { paths } from '../../paths';
+import { isValidEmail } from '../../lib/validate';
+import { paths } from '../../routes/paths';
 import { userState } from '../../states/user.state';
 
 export function SignInForm(): React.JSX.Element {
@@ -37,33 +37,26 @@ export function SignInForm(): React.JSX.Element {
     setIsPending(true);
 
     const { email, password } = data;
-
     if (!isValidEmail(email)) {
       setError('email', { message: '유효한 이메일 주소를 입력하세요.' });
       setIsPending(false);
       return;
     }
 
-    if (!isValidPassword(password)) {
-      setError('password', { message: '유효한 비밀번호를 입력하세요.' });
+    try {
+      const loginRes = await authClient.login({ email, password });
+      console.log('입력값>> ', loginRes);
+      setUser({ nickname: loginRes.nickname, role: loginRes.role });
+    } catch (err) {
+      setError('root', { type: 'server', message: err.message });
       setIsPending(false);
       return;
     }
-
-    const { nickname, role, error } = await authClient.login({ email, password });
-
-    if (error) {
-      setError('root', { type: 'server', message: error });
-      setIsPending(false);
-      return;
-    }
-
-    setUser({ nickname, role });
   };
 
   return (
     <Stack spacing={4}>
-      <Typography variant="h4">관리자 로그인</Typography>
+      <Typography variant="h4">식스틴 관리자 로그인</Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
           <Controller
@@ -73,7 +66,7 @@ export function SignInForm(): React.JSX.Element {
               <FormControl error={Boolean(errors.email)}>
                 <InputLabel>Email address</InputLabel>
                 <OutlinedInput {...field} label="Email address" type="email" />
-                {errors.email && <FormHelperText>{errors.root.message}</FormHelperText>}
+                {/* {errors.email && <FormHelperText>{errors.root.message}</FormHelperText>} */}
               </FormControl>
             )}
           />
@@ -112,7 +105,12 @@ export function SignInForm(): React.JSX.Element {
               비밀번호를 잊으셨나요?
             </MuiLink>
           </div>
-          {errors.root && <Alert color="error">{errors.root.message}</Alert>}
+          {errors.root && (
+            <Alert color="error" style={{ display: 'flex', alignItems: 'center' }}>
+              {errors.root.message}
+            </Alert>
+          )}
+
           <Button disabled={isPending} type="submit" variant="contained">
             로그인
           </Button>
