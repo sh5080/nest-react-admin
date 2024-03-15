@@ -12,7 +12,7 @@ import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/C
 
 import { Logo } from '../../../components/core/logo';
 import { isNavItemActive } from '../../../lib/is-nav-item-active';
-import { paths } from '../../../paths';
+import { paths } from '../../../routes/paths';
 import type { NavItemConfig } from '../../../types/nav';
 import { navItems } from './config';
 import { navIcons } from './nav-icons';

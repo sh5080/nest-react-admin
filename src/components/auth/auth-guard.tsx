@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useUser } from '../../hooks/use-user';
 import { logger } from '../../lib/default-logger';
-import { paths } from '../../paths';
+import { paths } from '../../routes/paths';
 
 export interface AuthGuardProps {
   children: React.ReactNode;
