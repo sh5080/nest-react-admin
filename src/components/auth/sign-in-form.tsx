@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import { Controller, useForm } from 'react-hook-form';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { authClient } from '../../lib/auth/client';
@@ -21,7 +21,7 @@ import { userState } from '../../states/user.state';
 
 export function SignInForm(): React.JSX.Element {
   const setUser = useSetRecoilState(userState);
-
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState<boolean>();
 
   const [isPending, setIsPending] = React.useState<boolean>(false);
@@ -45,8 +45,11 @@ export function SignInForm(): React.JSX.Element {
 
     try {
       const loginRes = await authClient.login({ email, password });
-      console.log('입력값>> ', loginRes);
+
       setUser({ nickname: loginRes.nickname, role: loginRes.role });
+      if (loginRes.nickname && loginRes.role) {
+        navigate(paths.dashboard.overview);
+      }
     } catch (err) {
       setError('root', { type: 'server', message: err.message });
       setIsPending(false);
