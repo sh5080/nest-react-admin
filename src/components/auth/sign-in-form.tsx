@@ -2,7 +2,6 @@ import * as React from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
 import InputLabel from '@mui/material/InputLabel';
 import MuiLink from '@mui/material/Link';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -15,7 +14,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { authClient } from '../../lib/auth/client';
-import { isValidEmail } from '../../lib/validate';
+import { isNotEmpty, isValidEmail } from '../../lib/validate';
 import { paths } from '../../routes/paths';
 import { userState } from '../../states/user.state';
 
@@ -38,7 +37,12 @@ export function SignInForm(): React.JSX.Element {
 
     const { email, password } = data;
     if (!isValidEmail(email)) {
-      setError('email', { message: '유효한 이메일 주소를 입력하세요.' });
+      setError('root', { message: '유효한 이메일 주소를 입력하세요.' });
+      setIsPending(false);
+      return;
+    }
+    if (!isNotEmpty(password)) {
+      setError('root', { message: '패스워드를 입력하세요.' });
       setIsPending(false);
       return;
     }
@@ -69,7 +73,6 @@ export function SignInForm(): React.JSX.Element {
               <FormControl error={Boolean(errors.email)}>
                 <InputLabel>Email address</InputLabel>
                 <OutlinedInput {...field} label="Email address" type="email" />
-                {/* {errors.email && <FormHelperText>{errors.root.message}</FormHelperText>} */}
               </FormControl>
             )}
           />
@@ -99,7 +102,6 @@ export function SignInForm(): React.JSX.Element {
                   label="Password"
                   type={showPassword ? 'text' : 'password'}
                 />
-                {errors.password && <FormHelperText>{errors.root.message}</FormHelperText>}
               </FormControl>
             )}
           />
