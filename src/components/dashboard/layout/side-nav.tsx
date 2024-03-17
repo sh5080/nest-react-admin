@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
 import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
+import { Link } from 'react-router-dom';
 
 import { Logo } from '../../../components/core/logo';
 import { isNavItemActive } from '../../../lib/is-nav-item-active';
@@ -121,53 +122,99 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
   console.log('머라고나옴? ', href);
   return (
     <li>
-      <Box
-        {...(href
-          ? {
-              component: 'a',
-              href,
-              target: external ? '_blank' : undefined,
-              rel: external ? 'noreferrer' : undefined,
-            }
-          : { role: 'button' })}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          color: 'var(--NavItem-color)',
-          cursor: 'pointer',
-          display: 'flex',
-          flex: '0 0 auto',
-          gap: 1,
-          p: '6px 16px',
-          position: 'relative',
-          textDecoration: 'none',
-          whiteSpace: 'nowrap',
-          ...(disabled && {
-            bgcolor: 'var(--NavItem-disabled-background)',
-            color: 'var(--NavItem-disabled-color)',
-            cursor: 'not-allowed',
-          }),
-          ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
-        }}
-      >
-        <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
-          {Icon ? (
-            <Icon
-              fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
-              fontSize="var(--icon-fontSize-md)"
-              weight={active ? 'fill' : undefined}
-            />
-          ) : null}
-        </Box>
-        <Box sx={{ flex: '1 1 auto' }}>
-          <Typography
-            component="span"
-            sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+      {href ? (
+        <Link
+          to={href} // 링크 경로 설정
+          target={external ? '_blank' : undefined} // 새 창 여부 설정
+          rel={external ? 'noreferrer' : undefined} // 보안 설정
+          style={{
+            // 스타일 설정은 필요에 따라 변경 가능
+            textDecoration: 'none',
+            color: 'inherit',
+          }}
+        >
+          <Box
+            sx={{
+              alignItems: 'center',
+              borderRadius: 1,
+              color: 'var(--NavItem-color)',
+              cursor: 'pointer',
+              display: 'flex',
+              flex: '0 0 auto',
+              gap: 1,
+              p: '6px 16px',
+              position: 'relative',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              ...(disabled && {
+                bgcolor: 'var(--NavItem-disabled-background)',
+                color: 'var(--NavItem-disabled-color)',
+                cursor: 'not-allowed',
+              }),
+              ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
+            }}
           >
-            {title}
-          </Typography>
+            <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
+              {Icon ? (
+                <Icon
+                  fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+                  fontSize="var(--icon-fontSize-md)"
+                  weight={active ? 'fill' : undefined}
+                />
+              ) : null}
+            </Box>
+            <Box sx={{ flex: '1 1 auto' }}>
+              <Typography
+                component="span"
+                sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+              >
+                {title}
+              </Typography>
+            </Box>
+          </Box>
+        </Link>
+      ) : (
+        <Box
+          sx={{
+            alignItems: 'center',
+            borderRadius: 1,
+            color: 'var(--NavItem-color)',
+            cursor: 'pointer',
+            display: 'flex',
+            flex: '0 0 auto',
+            gap: 1,
+            p: '6px 16px',
+            position: 'relative',
+            textDecoration: 'none',
+            whiteSpace: 'nowrap',
+            ...(disabled && {
+              bgcolor: 'var(--NavItem-disabled-background)',
+              color: 'var(--NavItem-disabled-color)',
+              cursor: 'not-allowed',
+            }),
+            ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
+          }}
+          role="button"
+        >
+          <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
+            {Icon ? (
+              <Icon
+                fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+                fontSize="var(--icon-fontSize-md)"
+                weight={active ? 'fill' : undefined}
+              />
+            ) : null}
+          </Box>
+          <Box sx={{ flex: '1 1 auto' }}>
+            <Typography
+              component="span"
+              sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+            >
+              {title}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
+      )}
     </li>
   );
 }
