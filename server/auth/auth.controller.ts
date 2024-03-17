@@ -83,15 +83,7 @@ export class AuthController {
         expires: refreshExp,
         httpOnly: true,
       };
-      const frontAccessOptions: {
-        expires: Date;
-        httpOnly: boolean;
-        secure?: boolean | undefined;
-        domain?: string | undefined;
-      } = {
-        expires: accessExp,
-        httpOnly: false,
-      };
+
       if (process.env.NODE_ENV === "development") {
         accessOptions.domain = authConfig().DEV_DOMAIN;
         refreshOptions.domain = authConfig().DEV_DOMAIN;
@@ -105,13 +97,10 @@ export class AuthController {
         nickname: loginData.userData.nickname,
         role: loginData.userData.role,
       };
-      const generateRandomToken = () => {
-        return crypto.randomUUID();
-      };
 
-      const randomToken = generateRandomToken();
+
       return res
-        .cookie("SAID", randomToken, frontAccessOptions)
+
         .cookie("access", loginData.tokens.accessToken, accessOptions)
         .cookie("refresh", loginData.tokens.refreshToken, refreshOptions)
         .status(successCode.OK)
@@ -161,15 +150,12 @@ export class AuthController {
     }
   }
   @Delete("/logout")
-  @UseGuards(AuthGuard)
   async logout(
-    @Req() req: AuthRequest,
     @Res()
     res: Response
   ) {
     try {
       return res
-        .clearCookie("SAID")
         .clearCookie("access")
         .clearCookie("refresh")
         .json(SuccessData(successCode.OK, "Logout Success"));
