@@ -4,6 +4,6 @@ import { persistAtom } from './index';
 
 export const userState = atom({
   key: 'user',
-  default: { nickname: '', role: '' },
+  default: { nickname: null, role: null },
   effects_UNSTABLE: [persistAtom],
 });
