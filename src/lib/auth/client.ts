@@ -1,6 +1,6 @@
 'use client';
 
-import { loginApi } from '../../apis/auth';
+import { loginApi, logoutApi } from '../../apis/auth';
 import { ClientError, ServerError } from '../../types/error.type';
 import type { User } from '../../types/user';
 
@@ -62,8 +62,8 @@ class AuthClient {
     return { data: user };
   }
 
-  async signOut(): Promise<{ error?: string }> {
-    localStorage.removeItem('custom-auth-token');
+  async logout(): Promise<{ error?: string }> {
+    await logoutApi();
 
     return {};
   }

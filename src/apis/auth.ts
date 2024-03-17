@@ -23,11 +23,12 @@ export const loginApi = async (email: string, password: string): Promise<LoginRe
   }
 };
 
-export const logout = async () => {
+export const logoutApi = async () => {
   try {
     const response = await defaultInstance.delete(`/${defaultUrl}/logout`, {
       withCredentials: true,
     });
+    console.log('logout 응답값!', response);
     return response.data;
   } catch (err) {
     console.error(err);
